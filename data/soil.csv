@@ -1,0 +1,8 @@
+soil_code,soil_display,soil_icon,soil_search
+1,No info,,
+2,Clay,,2;5;6
+3,Loam,,3;5;6;7
+4,Sandy,,4;6;7
+5,Clay or Loam,,
+6,Clay or Loam or Sandy,,
+7,Loam or Sandy,,

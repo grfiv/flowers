@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable"          content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="apple-touch-icon" href="images/icon.png"    type="image/png" />    <!-- icon.png 57x57; icon@2x.png 114x114 -->
+    <!--<link rel="shortcut icon"    href="images/favicon.ico" type="image/ico" />
+    <link rel="icon"             href="images/favicon.ico" type="image/ico" />-->
+
+
+    <title>NOVA Northern Virginia Native Plants</title>
+    <!--                                                                  -->
+    <!-- Search an in-memory SQL database of Northern-Virginia flowers    -->
+    <!--                                                                  -->
+    <!-- load a sqlite3 database file into browser memory                 -->
+    <!-- search the database from HTML form fields and display            -->
+    <!--                                                                  -->
+    <!-- George Fisher January/February 2017                              -->
+    <!-- george at georgefisher dot com                                   -->
+    <!--                                                                  -->
+
+    <!-- Framework7 CDN https://cdnjs.com/libraries/framework7 -->
+
+    <!-- Path to Framework7 iOS CSS theme styles-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/framework7/1.5.2/css/framework7.ios.min.css">
+    <!-- Path to Framework7 iOS related color styles -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/framework7/1.5.2/css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/framework7-icons.css">
+    <!-- Path to your custom app styles-->
+    <!--<link rel="stylesheet" href="css/app.css">-->
+    <style>
+        /* style image thumbnails
+         ----------------------
+
+      <div class="thumbnail">
+          <img src="landscape-img.jpg" alt="Image" />
+      </div>
+      <div class="thumbnail">
+          <img src="portrait-img.jpg" class="portrait" alt="Image" />
+      </div>
+
+      citation: http://jonathannicol.com/blog/2014/06/16/centre-crop-thumbnails-with-css/
+      */
+        .thumbnail {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .thumbnail img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            height: 100%;
+            width: auto;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        .thumbnail img.portrait {
+            width: 100%;
+            height: auto;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        /* style image thumbnails */
+
+    </style>
+</head>
+
+<body onload="setTimeout(function() { window.scrollTo(0, 1) }, 100);">
+
+<!-- Status bar overlay for full screen mode (PhoneGap) -->
+<div class="statusbar-overlay"></div>
+<!-- Panels overlay-->
+<div class="panel-overlay"></div>
+
+<!--                 -->
+<!--   LEFT PANEL    -->
+<!-- detailed search -->
+<!--                 -->
+<div class="panel panel-left panel-reveal"style="background-color: rgb(79, 129, 189);">
+    <div class="content-block">
+        <h2 style="color: black;">Select Characteristics</h2>
+
+        <div class="list-block">
+            <ul>
+
+                <li>
+                    <select id="catMenu" title="Select a plant type">
+                        <option value="0" selected="selected" disabled>Category</option>
+                    </select>
+                </li>
+
+                <li>
+                    <select id="heightMenu" title="Select a specific height range">
+                        <option value="0" selected="selected" disabled>Height</option>
+                    </select>
+                </li>
+
+                <li>
+                    <select id="bloomMenu" title="Select a blooming season">
+                        <option value="0" selected="selected" disabled>Bloom time</option>
+                    </select>
+                </li>
+
+                <li>
+                    <select id="moistMenu" title="Select a specific moisture requirement">
+                        <option value="0" selected="selected" disabled>Moisture</option>
+                    </select>
+                </li>
+
+                <li>
+                    <select id="sunMenu" title="Select an amount of sunshine available">
+                        <option value="0" selected="selected" disabled>Level of Sunshine</option>
+                    </select>
+                </li>
+
+                <li>
+                    <select id="wildMenu" title="Select wildlife">
+                        <option value="0" selected="selected" disabled>Wildlife</option>
+                    </select>
+                </li>
+
+                <li>
+                    <select id="soilMenu" title="Select soil type">
+                        <option value="0" selected="selected" disabled>Soil Type</option>
+                    </select>
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- Reset Search buttons -->
+        <div class="row">
+            <div class="col-50">
+                <a href="#" class="button button-big  color-red close-panel" id="cancel-form" >Reset</a>
+            </div>
+            <div class="col-50">
+                <a href="#" class="button button-big  color-green close-panel" id="submit-form">Search</a>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+
+<!--             -->
+<!-- RIGHT PANEL -->
+<!-- help screen -->
+<!--             -->
+<div class="panel panel-right panel-reveal" style="background-color: rgb(79, 129, 189);">
+    <div class="content-block">
+        <p style="text-align: right;"><a href="#" class="close-panel"><i class="f7-icons color-red">close_round_fill</i></a></p>
+        <div style="color: white">
+            <h2>Northern Virginia (NOVA) Native Plants</h2>
+            <h3>Learn about good garden plants for Northern Virginia</h3>
+            <ul style="background-color: white;color: black;">
+                <li>Type any letters in a plant's name (either scientific or common name)</li>
+                <li>Click on the plant to see its details</li>
+                <li>Click on
+                    <span style="background-color: white;"><i class="f7-icons color-blue">arrow_left_fill</i></span>  to search for specific characteristics</li>
+            </ul>
+            <hr>
+            <p>Plant NOVA Natives includes the 14 jurisdictions bounded by Arlington, Alexandria, Fairfax, Loudoun, and Prince William.</p>
+            <p id="contactNOVA">Contact us at
+                <br>
+                plantnovanatives@gmail.com
+                <br>
+                http://www.plantnovanatives.org/
+            </p>
+            <hr>
+            <p style="font-size: smaller;" id="contactGeorge">App by George Fisher
+                <br>
+                george@georgefisher.com
+                <br>
+                https://georgefisher.com/
+            </p>
+        </div>
+    </div>
+</div>
+
+<!--                             -->
+<!--         MAIN PANEL          -->
+<!-- searchable flower list view -->
+<!--                             -->
+<div class="views">
+    <!-- Your main view, should have "view-main" class -->
+    <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+            <div class="navbar-inner">
+
+                <div class="left">
+                    <a href="#" class="link icon-only open-panel"><i class="f7-icons">arrow_left_fill</i></a>
+                </div>
+
+                <div class="center sliding"  style="margin: 0 auto;"><img src="icons/logo_64x.jpg" style="width: inherit;margin: 0 auto;display: block;" /></div>
+
+                <div class="right">
+                    <a href="#" class="link icon-only open-panel" data-panel="right"><i class="f7-icons">help</i></a>
+                </div>
+
+            </div>
+        </div>
+        <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+            <!-- Page, "data-page" contains page name -->
+            <div data-page="index" class="page">
+
+                <!-- Scrollable page content -->
+                <div class="page-content">
+
+                    <form class="searchbar">
+                        <div class="searchbar-input">
+                            <input type="search" placeholder="Enter Scientific or Common name">
+                            <a href="#" class="searchbar-clear"></a>
+                        </div>
+                        <a href="#" class="searchbar-cancel">Cancel</a>
+                    </form>
+                    <!--<div class="searchbar-overlay"></div>-->
+
+                    <div class="content-block searchbar-not-found">
+                        <h1>Nothing found </h1>
+                    </div>
+
+                    <div class="list-block list-block-search searchbar-found virtual-list">
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Path to Framework7 Library JS-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/framework7/1.5.2/js/framework7.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/template7/1.1.4/template7.min.js"></script>
+
+<!-- SQL database -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/0.4.0/js/sql.js"></script> <!-- https://github.com/kripken/sql.js -->
+
+<!-- Path to your app js-->
+<!--<script type="text/javascript" src="js/app.js"></script>-->
+
+<!--                           -->
+<!-- TEMPLATE FOR FLOWER POPUP -->
+<!--                           -->
+<script id="flower-popup-template" type="text/template7">
+    <div class="popup">
+        <div class="content-block">
+
+            <!-- navbar: icon, latin name, blank -->
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a href="#" class="link close-popup"><i class="f7-icons">close_round_fill</i></a>
+                    </div>
+                    <div class="center">
+                        <span style="font-size: smaller;font-weight: bold;">{{latin}}</span></div>
+                    <div class="right">
+                        <img src="icons/logo_32x.jpg" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- common name, image -->
+            <figure>
+                <img src="imgs200x200/{{image_name}}" style="width: inherit;margin: 0 auto;display: block;" />
+                <figcaption style="text-align: center;font-weight: bold;">{{common}}</figcaption>
+            </figure>
+
+            <!-- text -->
+            <div class="row">
+                <div class="col-30">
+                    <b>Category: </b>
+                </div>
+                <div class="col-70">
+                    {{cat_display}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-30">
+                    <b>Height: </b>
+                </div>
+                <div class="col-70">
+                    {{height_display}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-30">
+                    <b>Season: </b>
+                </div>
+                <div class="col-70">
+                    {{bloom_display}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-30">
+                    <b>Soil: </b>
+                </div>
+                <div class="col-70">
+                    {{soil_display}}
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- icons and text -->
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-100">
+                    <img src="icons/{{deer_icon}}" alt="deer icon" />
+                    <br>
+                    <b>Deer : </b>{{deer_display}}
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-100">
+                    <img src="icons/{{wildlife_icon}}" alt="wildlife icon" />
+                    <br>
+                    <b>Wildlife : </b> {{wildlife_display}}
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-100">
+                    <img src="icons/{{moist_icon}}" alt="moisture icon" />
+                    <br>
+                    <b>Moisture:</b> {{moist_display}}
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-100">
+                    <img src="icons/{{sun_icon}}" alt="sun icon" />
+                    <br>
+                    <b>Sun Needs:</b> {{sun_display}}
+                </div>
+            </div>
+
+            <!-- general comments-->
+            {{#if wildlife_comments}}
+            <div class="row" style="font-family: Helvetica, Arial, sans-serif;">
+                <div class="col-30">
+                    <b>Wildlife Comments: </b>
+                </div>
+                <div class="col-70">
+                    {{wildlife_comments}}
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if design_function}}
+            <div class="row" style="font-family: Helvetica, Arial, sans-serif;">
+                <div class="col-30">
+                    <b>Design Function: </b>
+                </div>
+                <div class="col-70">
+                    {{design_function}}
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if gardening_tips}}
+            <div class="row" style="font-family: Helvetica, Arial, sans-serif;">
+                <div class="col-30">
+                    <b>Gardening Tips: </b>
+                </div>
+                <div class="col-70">
+                    {{gardening_tips}}
+                </div>
+            </div>
+            {{/if}}
+
+            <!-- photo credits-->
+            <hr>
+            <div class="row">
+                <div class="col-100" style="font-size: smaller;">
+                    <b>Photo Credit: </b>{{credit_display}}
+                </div>
+            </div>
+
+            <!-- DISPLAY DATABASE FIELDS -->
+            <!--
+            <hr>
+            <div class="accordion-item" style="margin:50px 0 25px 0;background-color: #5ac8fa;">
+                <div class="accordion-item-toggle"><h3 style="text-align: center;vertical-align: middle;">database fields</h3></div>
+                <div class="accordion-item-content">
+                    <ul>
+                        {{#each props}}
+                        <li>{{@key}}: {{this}}</li>
+                        {{else}}
+                        <li>No properties</li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            -->
+
+        </div>
+
+    </div>
+
+</script>
+
+<!--          -->
+<!-- PROGRAM  -->
+<!--          -->
+<script>
+    // Initialize app
+    var myApp = new Framework7();
+
+    // If we need to use custom DOM library, let's save it to $$ variable:
+    var $$ = Dom7;
+
+    // Add view
+    var mainView = myApp.addView('.view-main', {
+        // Because we want to use dynamic navbar, we need to enable it for this view:
+        dynamicNavbar: true
+    });
+
+    var mySearchbar = myApp.searchbar('.searchbar', {
+        searchList: '.list-block-search',
+        searchIn: '.item-title'
+    });
+
+    var select_clause = "SELECT * "   +
+        "FROM flowers "               +
+        "NATURAL JOIN height "        +
+        "NATURAL JOIN moisture "      +
+        "NATURAL JOIN categories "    +
+        "NATURAL JOIN sun "           +
+        "NATURAL JOIN deer "          +
+        "NATURAL JOIN soil "          +
+        "NATURAL JOIN bloom "         +
+        "NATURAL JOIN photo_credits " +
+        "NATURAL JOIN wildlife ";
+
+    var bloom_code  = 0;
+    var cat_code    = 0;
+    var height_code = 0;
+    var moist_code  = 0;
+    var moist_where = '';
+    var sun_code    = 0;
+    var sun_where   = '';
+    var deer_code   = 0;
+    var wild_code   = 0;
+    var wild_where  = '';
+    var soil_code   = 0;
+    var soil_where  = '';
+
+    var height_selector = $$('#heightMenu');
+    var bloom_selector  = $$('#bloomMenu');
+    var moist_selector  = $$('#moistMenu');
+    var sun_selector    = $$('#sunMenu');
+    var cat_selector    = $$('#catMenu');
+    var wild_selector   = $$('#wildMenu');
+    var soil_selector   = $$('#soilMenu');
+
+    function load_flower_list(bloom_code_,
+                              cat_code_,
+                              height_code_,
+                              moist_code_,
+                              sun_code_,
+                              deer_code_,
+                              wild_code_,
+                              soil_code_) {
+
+        // ============================================
+        // BUILD WHERE CLAUSE AND LOAD LISTVIEW
+        // ============================================
+
+        // accept (integer)value input or set default of zero
+        // --------------------------------------------------
+        bloom_code_  = typeof bloom_code_  !== 'undefined' ? parseInt(bloom_code_)  : 0;
+        cat_code_    = typeof cat_code_    !== 'undefined' ? parseInt(cat_code_)    : 0;
+        height_code_ = typeof height_code_ !== 'undefined' ? parseInt(height_code_) : 0;
+        moist_code_  = typeof moist_code_  !== 'undefined' ? parseInt(moist_code_)  : 0;
+        sun_code_    = typeof sun_code_    !== 'undefined' ? parseInt(sun_code_)    : 0;
+        deer_code_   = typeof deer_code_   !== 'undefined' ? parseInt(deer_code_)   : 0;
+        wild_code_   = typeof wild_code_   !== 'undefined' ? parseInt(wild_code_)   : 0;
+        soil_code_   = typeof soil_code_   !== 'undefined' ? parseInt(soil_code_)   : 0;
+
+        var codes = [
+                    {key:"bloom_code", value:bloom_code_},
+                    {key:"cat_code",   value:cat_code_},
+                    {key:"height_code",value:height_code_},
+                    {key:"moist_code", value:moist_code_},
+                    {key:"sun_code",   value:sun_code_},
+                    {key:"deer_code",  value:deer_code_},
+                    {key:"wild_code",  value:wild_code_},
+                    {key:"soil_code",  value:soil_code_}
+                    ];
+
+        // create WHERE clause
+        // -------------------
+        var where_clause =  " WHERE image_name != ''";  // only flowers with images
+
+        for (index in codes) {
+            if (codes[index].value != 0) {
+                if (codes[index].key=='wild_code') {
+                    where_clause = where_clause + " AND " + wild_where;
+                } else if (codes[index].key=='sun_code') {
+                    where_clause = where_clause + " AND " + sun_where;
+                } else if (codes[index].key=='moist_code') {
+                    where_clause = where_clause + " AND " + moist_where;
+                } else if (codes[index].key=='soil_code') {
+                    where_clause = where_clause + " AND " + soil_where;
+                } else {
+                    where_clause = where_clause + " AND " + codes[index].key + "='" + codes[index].value + "'";
+                }
+            }
+        }
+
+        var query = select_clause + where_clause + ";";
+        res       = db.exec(query);
+        console.log(res);
+
+
+        // TODO: at this point I should iterate over the columns and values to get variable values rather than relying on position in the array
+
+        var itemlist = [];         // for listview template
+
+        if (res.length > 0) {
+            // create the dynamic list view (virtual list)
+            // using Template7 template
+            // -------------------------------------------
+            for (var idx in res[0].values) {
+                var latin = res[0].values[idx][1];
+                var common = res[0].values[idx][2];
+                var img_name = res[0].values[idx][3];
+                var item = {dblookup: common, title: latin + "<br>" + common, picture: img_name};
+                itemlist.push(item);
+            }
+        }
+
+        var myList = myApp.virtualList('.list-block.virtual-list', {
+            // Array with items data
+            items: itemlist,
+
+            // Template 7 template to render each item
+            template: '<li class="item-content" data-dblookup="{{class}}">' +
+            '<div class="item-media" data-dblookup="{{dblookup}}"><div class="thumbnail"  data-dblookup="{{dblookup}}"><img src="imgs200x200/{{picture}}"></div></div>' +
+            '<div class="item-inner" data-dblookup="{{dblookup}}"><div class="item-title" data-dblookup="{{dblookup}}">{{title}}</div></div>' +
+            '</li>',
+
+            // search all items, we need to return array with indexes of matched items
+            searchAll: function (query, items) {
+                var foundItems = [];
+                for (var i = 0; i < items.length; i++) {
+                    // Check if title contains query string
+                    if (items[i].title.toLowerCase().indexOf(query.trim().toLowerCase()) >= 0) foundItems.push(i);
+                }
+                // Return array with indexes of matched items
+                return foundItems;
+            }
+        });
+    }
+
+    // ===========================================================================
+    //                       INITIALIZATION
+    //                       --------------
+    // LOAD THE SQLITE3 DATABASE FILE, BUILD DEFAULT LISTVIEW, POPULATE SELECTIONS
+    // https://github.com/kripken/sql.js/
+    // ===========================================================================
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'data/flowers.sqlite3', true);
+    xhr.responseType = 'arraybuffer';
+
+    var db;               // global for database connection
+
+    xhr.onload = function () {
+        // load the sqlite3 database file
+        // -------------------------------
+        var uInt8Array = new Uint8Array(this.response);
+        db = new SQL.Database(uInt8Array);
+
+        load_flower_list();
+
+        // TODO: do these using column names rather than position
+
+        // build the height dropdown box
+        // -----------------------------
+        var height_data = db.exec("SELECT * FROM height");
+        var height_option;
+
+        for (var i = 0; i < height_data[0].values.length; i++) {
+            height_option = "<option value='" + height_data[0].values[i][0] + "'>" + height_data[0].values[i][1] + "</option>";
+            height_selector.append(height_option);
+        }
+
+        // build the blooming season dropdown box
+        // --------------------------------------
+        var bloom_data = db.exec("SELECT * FROM bloom");
+        var bloom_option;
+        for (i = 0; i < bloom_data[0].values.length; i++) {
+            bloom_option = "<option value='" + bloom_data[0].values[i][0] + "'>" + bloom_data[0].values[i][1] + "</option>";
+            bloom_selector.append(bloom_option);
+        }
+
+        // build the moisture dropdown box
+        // --------------------------------------
+        var moist_data = db.exec("SELECT * FROM moisture");
+        var moist_option;
+        for (i = 0; i < moist_data[0].values.length; i++) {
+            if (moist_data[0].values[i][3]=="") continue;
+            moist_option = "<option value='" + moist_data[0].values[i][0] + "'>" + moist_data[0].values[i][1] + "</option>";
+            moist_selector.append(moist_option);
+        }
+
+        // build the sunshine dropdown box
+        // --------------------------------------
+        var sun_data = db.exec("SELECT * FROM sun");
+        var sun_option;
+        for (i = 0; i < sun_data[0].values.length; i++) {
+            if (sun_data[0].values[i][3]=="") continue;
+            sun_option = "<option value='" + sun_data[0].values[i][0] + "'>" + sun_data[0].values[i][1] + "</option>";
+            sun_selector.append(sun_option);
+        }
+
+        // build the category dropdown box
+        // --------------------------------------
+        var cat_data = db.exec("SELECT * FROM categories");
+        var cat_option;
+        for (i = 0; i < cat_data[0].values.length; i++) {
+            cat_option = "<option value='" + cat_data[0].values[i][0] + "'>" + cat_data[0].values[i][1] + "</option>";
+            cat_selector.append(cat_option);
+        }
+
+        // build the wildlife dropdown box
+        // --------------------------------------
+        var wild_data = db.exec("SELECT * FROM wildlife");
+        var wild_option;
+        for (i = 0; i < wild_data[0].values.length; i++) {
+            // wild_data[0].values[i][0] wild_code, [1] display, [2] icon, [3] search
+            // if search is empty don't display
+            if (wild_data[0].values[i][3]=="") continue;
+            wild_option = "<option value='" + wild_data[0].values[i][0] + "'>" + wild_data[0].values[i][1] + "</option>";
+            wild_selector.append(wild_option);
+        }
+
+        // build the soil dropdown box
+        // --------------------------------------
+        var soil_data = db.exec("SELECT * FROM soil");
+        var soil_option;
+        for (i = 0; i < soil_data[0].values.length; i++) {
+            if (soil_data[0].values[i][3]=="") continue;
+            soil_option = "<option value='" + soil_data[0].values[i][0] + "'>" + soil_data[0].values[i][1] + "</option>";
+            soil_selector.append(soil_option);
+        }
+    };
+    xhr.send();
+
+    // =======================================================================
+    // ONCLICK FUNCTION FOR EACH LISTVIEW ITEM: OPEN POPUP FROM TEMPLATE
+    // =======================================================================
+    $$('.searchbar-found').on('click', function (e) {
+
+        var flower_popup_template = $$('#flower-popup-template').html(); // pull up the template html
+        var compiledTemplate = Template7.compile(flower_popup_template); // compile it with Template7
+
+        // pull the sql row by common name
+        // -------------------------------
+        var common_name  = e.target.parentNode.getAttribute("data-dblookup");
+        var query        = select_clause + " where common='" + common_name + "';";
+        res              = db.exec(query);
+
+        var column_list  = res[0].columns;        // the columns returned
+        var element_list = res[0].values[0];      // the values returned
+
+        // create json object of column_name:value elements for use by Template7
+        // ---------------------------------------------------------------------
+        var context = {};
+        for (i = 0; i < column_list.length; i += 1) {
+            context[column_list[i]] = element_list[i];
+        }
+
+        context["props"] = context; // just for temporary accordian display
+
+        var popupHTML = compiledTemplate(context);
+
+        // popup dynamically created from template
+        // ---------------------------------------
+        myApp.popup(popupHTML);
+    });
+
+    // =======================================================================
+    // ONCLICK FUNCTION FOR CANCEL BUTTON IN LEFT-PANEL FORM
+    // 1. reset select drop downs to default
+    // 2. reset where-clause variables to default
+    // 3. call the function to rebuild the main-screen list view
+    // =======================================================================
+    $$("#cancel-form").on("click", function () {
+        // reset the select drop downs
+        height_selector.val($$("#heightMenu option[selected]").val());
+        bloom_selector.val($$("#bloomMenu option[selected]").val());
+        moist_selector.val($$("#moistMenu option[selected]").val());
+        sun_selector.val($$("#sunMenu option[selected]").val());
+        cat_selector.val($$("#catMenu option[selected]").val());
+        wild_selector.val($$("#wildMenu option[selected]").val());
+        soil_selector.val($$("#soilMenu option[selected]").val());
+
+        // reset variables to default
+        bloom_code  = 0;
+        cat_code    = 0;
+        height_code = 0;
+        moist_code  = 0;
+        sun_code    = 0;
+        deer_code   = 0;
+        wild_code   = 0;
+        soil_code   = 0;
+
+        load_flower_list();
+    });
+
+    // =======================================================================
+    // ONCLICK FUNCTION FOR SUBMIT BUTTON IN LEFT-PANEL FORM
+    // 1. find the value of the select drop downs
+    // 2. call the function to rebuild the main-screen list view
+    // =======================================================================
+    $$("#submit-form").on("click", function (e) {
+        var height_sel = document.getElementById('heightMenu');
+        var height_opt = height_sel.options[height_sel.selectedIndex];
+        height_code    = height_opt.value;
+
+        var bloom_sel = document.getElementById('bloomMenu');
+        var bloom_opt = bloom_sel.options[bloom_sel.selectedIndex];
+        bloom_code    = bloom_opt.value;
+
+        var moist_sel = document.getElementById('moistMenu');
+        var moist_opt = moist_sel.options[moist_sel.selectedIndex];
+        moist_code    = moist_opt.value;
+        // construct the whole string for the where_clause
+        var moist_search;
+        if (moist_code == 0) {
+            moist_search = "";
+        } else {
+            moist_search = db.exec("SELECT moist_search FROM moisture WHERE moist_code='" + moist_code + "'")[0].values[0];
+        }
+        if (moist_search=="") {
+            moist_where = " (moist_code='" + moist_code + "') ";
+        } else {
+            moist_where = ' (';
+            moist_search = moist_search[0].split(";");
+            for (var i in moist_search) {
+                moist_where = moist_where + "moist_code='" + moist_search[i] + "' OR "
+            }
+            moist_where = moist_where.slice(0, -4) + ")";
+        }
+
+        var sun_sel = document.getElementById('sunMenu');
+        var sun_opt = sun_sel.options[sun_sel.selectedIndex];
+        sun_code    = sun_opt.value;
+        // construct the whole string for the where_clause
+        var sun_search;
+        if (sun_code == 0) {
+            sun_search = "";
+        } else {
+            sun_search = db.exec("SELECT sun_search FROM sun WHERE sun_code='" + sun_code + "'")[0].values[0];
+        }
+        if (sun_search=="") {
+            sun_where = " (sun_code='" + sun_code + "') ";
+        } else {
+            sun_where = ' (';
+            sun_search = sun_search[0].split(";");
+            for (var i in sun_search) {
+                sun_where = sun_where + "sun_code='" + sun_search[i] + "' OR "
+            }
+            sun_where = sun_where.slice(0, -4) + ")";
+        }
+
+        var cat_sel = document.getElementById('catMenu');
+        var cat_opt = cat_sel.options[cat_sel.selectedIndex];
+        cat_code    = cat_opt.value;
+
+        // wildlife has a field 'wildlife_search'
+        // if not null it contains a semi-colon-separated list
+        // of codes all of which should be selected
+        var wild_sel = document.getElementById('wildMenu');
+        var wild_opt = wild_sel.options[wild_sel.selectedIndex];
+        wild_code    = wild_opt.value;
+        // construct the whole string for the where_clause
+        var wildlife_search;
+        if (wild_code == 0) {
+            wildlife_search = "";
+        } else {
+            wildlife_search = db.exec("SELECT wildlife_search FROM wildlife WHERE wild_code='" + wild_code + "'")[0].values[0];
+        }
+        if (wildlife_search=="") {
+            wild_where = " (wild_code='" + wild_code + "') ";
+        } else {
+            wild_where = ' (';
+            wildlife_search = wildlife_search[0].split(";");
+            for (var i in wildlife_search) {
+                wild_where = wild_where + "wild_code='" + wildlife_search[i] + "' OR "
+            }
+            wild_where = wild_where.slice(0, -4) + ")";
+        }
+
+        var soil_sel = document.getElementById('soilMenu');
+        var soil_opt = soil_sel.options[soil_sel.selectedIndex];
+        soil_code    = soil_opt.value;
+        // construct the whole string for the where_clause
+        var soil_search;
+        if (soil_code == 0) {
+            soil_search = "";
+        } else {
+            soil_search = db.exec("SELECT soil_search FROM soil WHERE soil_code='" + soil_code + "'")[0].values[0];
+        }
+        if (soil_search=="") {
+            soil_where = " (soil_code='" + soil_code + "') ";
+        } else {
+            soil_where = ' (';
+            soil_search = soil_search[0].split(";");
+            for (var i in soil_search) {
+                soil_where = soil_where + "soil_code='" + soil_search[i] + "' OR "
+            }
+            soil_where = soil_where.slice(0, -4) + ")";
+        }
+
+
+        deer_code   = 0;
+
+        load_flower_list(bloom_code_  = bloom_code,
+                         cat_code_    = cat_code,
+                         height_code_ = height_code,
+                         moist_code_  = moist_code,
+                         sun_code_    = sun_code,
+                         deer_code_   = deer_code,
+                         wild_code_   = wild_code,
+                         soil_code_   = soil_code);
+    });
+
+    // =======================================================================
+    // ONCLICK FUNCTION FOR CONTACTS
+    // =======================================================================
+    $$('#contactNOVA').on('click', function (e) {
+        alert("\nPlease contact NOVA at\n\nplantnovanatives@gmail.com\n\nor\n\nhttp://www.plantnovanatives.org/\n");
+    });
+
+    $$('#contactGeorge').on('click', function (e) {
+        alert("\nPlease contact George Fisher at\n\ngeorge@georgefisher.com\n\nor\n\nhttps://georgefisher.com/\n");
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>Flowers Table Edit NOVA</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.1/css/select.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="../../css/editor.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="../resources/syntax/shCore.css">
+	<link rel="stylesheet" type="text/css" href="../resources/demo.css">
+	<style type="text/css" class="init">
+	
+	</style>
+	<script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.4.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.1/js/dataTables.select.min.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="../../js/dataTables.editor.min.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="../resources/syntax/shCore.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="../resources/demo.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="../resources/editor-demo.js">
+	</script>
+	<script type="text/javascript" language="javascript" class="init">
+	
+
+
+var editor; // use a global for the submit and return data rendering in the examples
+
+$(document).ready(function() {
+	editor = new $.fn.dataTable.Editor( {
+		ajax: "../php/edit_flowers.php",
+		table: "#flowers",
+		fields: [  {
+			label: "latin:",
+			name: "latin"
+		}, {
+			label: "common:",
+			name: "common"
+		}, {
+			label: "image_name:",
+			name: "image_name"
+		}, {
+			label: "height_code:",
+			name: "height_code"
+		}, {
+			label: "bloom_code:",
+			name: "bloom_code"
+		}, {
+			label: "sun_code:",
+			name: "sun_code"
+		}, {
+			label: "moist_code:",
+			name: "moist_code"
+		}, {
+			label: "cat_code:",
+			name: "cat_code"
+		}, {
+			label: "deer_code:",
+			name: "deer_code"
+		}, {
+			label: "wild_code:",
+					name: "wild_code"
+		}, {
+			label: "soil_code:",
+					name: "soil_code"
+		}, {
+			label: "wildlife_comments:",
+					name: "wildlife_comments"
+		}, {
+			label: "design_function:",
+					name: "design_function"
+		}, {
+			label: "gardening_tips:",
+					name: "gardening_tips"
+		}, {
+			label: "credit_code:",
+					name: "credit_code"
+		}
+		]
+	} );
+
+	$('#flowers').DataTable( {
+		dom: "Bfrtip",
+		ajax: "../php/edit_flowers.php",
+		columns: [
+
+			{ data: "latin" },
+			{ data: "common" },
+			{ data: "image_name" },
+			{ data: "height_code" },
+			{ data: "bloom_code" },
+			{ data: "sun_code" },
+			{ data: "moist_code" },
+			{ data: "cat_code" },
+			{ data: "deer_code" },
+			{ data: "wild_code" },
+			{ data: "soil_code" },
+			{ data: "wildlife_comments" },
+			{ data: "design_function" },
+			{ data: "gardening_tips" },
+			{ data: "credit_code" }
+		],
+		select: true,
+		buttons: [
+			{ extend: "create", editor: editor },
+			{ extend: "edit",   editor: editor },
+			{ extend: "remove", editor: editor }
+		]
+	} );
+} );
+
+
+
+	</script>
+</head>
+<body class="dt-example">
+	<div class="container">
+		<section>
+			<h1>NOVA Native Plants <b><i>flowers</i></b> table editor</h1>
+			<div class="info">
+				<p>This website will allow you to edit the <b><i>flowers</i></b> table directly.</p>
+
+                <p> Please note that once changes are
+                made here the <b>flowers.csv</b> file will no longer be correct. The
+                    <a href="https://georgefisher.com/flowers/tables.html" target="_blank"><b><i>tables.html</i></b></a>
+                    page can be used to download a <b>flowers.csv</b> file with the current information.
+					<span style="text-decoration: underline;">This is a good idea for backup.</span></p>
+                <p><b>SEARCH:</b> Notice that the search box searches all the fields not just the names.</p>
+                <p><b>ADD:</b> Click the <b>New</b> button and fill in the fields. The new field will instantly appear in the app.</p>
+                <p><b>EDIT:</b> Click on an entry and then click the <b>Edit</b> button. Changes will instantly appear in the app.</p>
+                <p><b>DELETE:</b> ten cuidado!</p>
+                <p><span style="text-decoration: underline;">New flower images and icons</span> still have to go through the process of you inserting them into the
+                    <span style="text-decoration: underline;"><i>screenshots</i></span> and
+                    <span style="text-decoration: underline;"><i>icons</i></span> folders, respectively, and then me running a script
+                to get them into shape and uploading them to the web.</p>
+                <p>Similarly, <span style="text-decoration: underline;">all the other <b><i>*.csv</i></b> files</span> work as before with you editing the files and me loading them into the database.</p>
+                <p>This table displays only 10 items at a time. There is a page selector at the bottom of the page.</p>
+                <p><b>CAVEATS: </b> (1) if any '_code' fields are empty or outside the range of numbers specified in the index table then the item will not appear in the app;
+                    <a href="https://georgefisher.com/flowers/tables.html" target="_blank"><b><i>tables.html</i></b></a> will quickly show you any table. (2) you must not use double quotes ( " ), they will break
+				the csv download; single quotes ( ' ) are OK. (3) "instant" updates may have to be preceded by a browser-cache flush.</p>
+			</div>
+			<div class="demo-html"></div>
+			<table id="flowers" class="display" cellspacing="0" width="100%">
+				<thead>
+				<tr>
+					<th>latin</th>
+					<th>common</th>
+					<th>image_name</th>
+					<th>height_code</th>
+					<th>bloom_code</th>
+					<th>sun_code</th>
+					<th>moist_code</th>
+					<th>cat_code</th>
+					<th>deer_code</th>
+					<th>wild_code</th>
+					<th>soil_code</th>
+					<th>wildlife_comments</th>
+					<th>design_function</th>
+					<th>gardening_tips</th>
+					<th>credit_code</th>
+				</tr>
+				</thead>
+				<tfoot>
+				<tr>
+					<th>latin</th>
+					<th>common</th>
+					<th>image_name</th>
+					<th>height_code</th>
+					<th>bloom_code</th>
+					<th>sun_code</th>
+					<th>moist_code</th>
+					<th>cat_code</th>
+					<th>deer_code</th>
+					<th>wild_code</th>
+					<th>soil_code</th>
+					<th>wildlife_comments</th>
+					<th>design_function</th>
+					<th>gardening_tips</th>
+					<th>credit_code</th>
+				</tr>
+				</tfoot>
+			</table>
+
+
+		</section>
+	</div>
+
+</body>
+</html>

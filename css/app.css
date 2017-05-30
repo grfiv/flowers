@@ -1,0 +1,39 @@
+/* style image thumbnails
+         ----------------------
+
+      <div class="thumbnail">
+          <img src="landscape-img.jpg" alt="Image" />
+      </div>
+      <div class="thumbnail">
+          <img src="portrait-img.jpg" class="portrait" alt="Image" />
+      </div>
+
+      citation: http://jonathannicol.com/blog/2014/06/16/centre-crop-thumbnails-with-css/
+      */
+.thumbnail {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+}
+.thumbnail img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.thumbnail img.portrait {
+    width: 100%;
+    height: auto;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+/* style image thumbnails */

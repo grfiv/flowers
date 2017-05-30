@@ -1,0 +1,216 @@
+{
+  "name": "Northern Virginia Native Plants",
+  "short_name": "VA_plants",
+  "description": "Discover information about the plants native to Northern Virginia. Buy, plant, enjoy and improve our world.",
+  "start_url": "https://georgefisher.com/flowers/index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "en-US",
+  "icons": [
+      {
+      "src": "images/icon16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon24.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon30.png",
+      "sizes": "30x30",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon42.png",
+      "sizes": "42x42",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon44.png",
+      "sizes": "44x44",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon54.png",
+      "sizes": "54x54",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon65.png",
+      "sizes": "65x65",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon62.png",
+      "sizes": "62x62",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon70.png",
+      "sizes": "70x70",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon71.png",
+      "sizes": "71x71",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon76.png",
+      "sizes": "76x76",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon90.png",
+      "sizes": "90x90",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon99.png",
+      "sizes": "99x99",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon106.png",
+      "sizes": "106x106",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon120.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon150.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon167.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon170.png",
+      "sizes": "170x170",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon210.png",
+      "sizes": "210x210",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon270.png",
+      "sizes": "270x270",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon360.png",
+      "sizes": "360x360",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon.png",
+      "sizes": "57x57",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon@2x.png",
+      "sizes": "114x114",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon24bw.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon48bw.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "images/favicon16.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "images/favicon32.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "images/favicon.ico",
+      "sizes": "128x128",
+      "type": "image/x-icon"
+    }
+  ]
+}

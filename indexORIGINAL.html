@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link rel="apple-touch-icon" href="images/icon.png"/> <!-- icon.png 57x57; icon@2x.png 114x114 -->
+    <link rel="shortcut icon"    href="images/favicon.ico"/>
+
+    <title>Northern Virginia Native Plants</title>
+    <!--                                                                  -->
+    <!-- Search an in-memory SQL database of Northern-Virginia flowers    -->
+    <!--                                                                  -->
+    <!-- load a sqlite3 database file into browser memory                 -->
+    <!-- search the database from HTML form fields and display in a table -->
+    <!--                                                                  -->
+    <!-- George Fisher January 2017                                       -->
+    <!--                                                                  -->
+
+    <!-- jQuery -->
+    <script src="js/jquery-latest.min.js"></script>
+
+    <!-- Twitter Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <!-- https://silviomoreto.github.io/bootstrap-select/ --><!--
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>-->
+
+    <!-- SQL database -->
+    <script src="js/sql.js"></script> <!-- https://github.com/kripken/sql.js -->
+
+    <!-- download csv file -->
+    <script src="js/download.js"></script> <!-- js:http://js.zapjs.com/js/download.js docs:http://danml.com/download.html -->
+
+    <!-- web app manifest support -->
+    <script src="js/manup.js"></script>
+    <link rel="manifest" href="manifest.json"/>
+
+    <style>
+        /* background image for the whole page */
+        body {
+            background-image: url("images/butterfly_weed.JPG");
+            background-color: #cccccc;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        /* opaque background to table of flowers */
+        #name-search-table {
+            background-color: #FFFFE0;
+        }
+
+        /* pop-up box of image on row-click */
+        #screenshot{
+            position:absolute;
+            border:1px solid #ccc;
+            background:#333;
+            padding:5px;
+            display:none;
+            color:#fff;
+        }
+    </style>
+
+</head>
+<body onload="setTimeout(function() { window.scrollTo(0, 1) }, 100);">
+
+<div class="container">
+
+    <section id="main-page">
+        <!--           -->
+        <!-- Main Page -->
+        <!--           -->
+
+        <!-- page title -->
+        <h1 style="text-align: center;color: yellow;">Northern Virginia Native Plants</h1>
+
+        <!-- download button -->
+        <div id="download-btn-div" style="display: none;">
+            <button id="download-btn" style="font-weight: bold;color: blue;">Download the table to a csv file</button>
+            <input type="text" name="download-title" id="download-title" value=""
+                   placeholder="file name (optional)"
+                   style="color: black;font-family: 'Courier New', Courier, monospace;margin-bottom: 5px;">
+            <br>
+        </div>
+
+        <!-- input box to select a plant by name -->
+        <label for="name-search" style="background-color: white;padding: 2px;">Begin typing the Latin or Common name of
+            a plant or leave blank:</label>
+        <input type="text" name="name-search" id="name-search" class="name" value=""
+               placeholder="aceri or maple"
+               autofocus style="margin-bottom: 2px;">
+
+        <!-- clear all button -->
+        <button id="clear-all-btn" class="btn btn-default btn-sm" style="margin-left: 50px;font-weight: bold;">Clear All</button>
+
+        <br>
+
+        <!-- Dropdown Boxes -->
+
+        <div class="row">
+
+            <!-- dropdown to select height range (filled dynamically at page load) -->
+            <div class="col-md-2">
+                <label for="heightMenu" style="background-color: white;padding: 2px;font-size: smaller;">Height Range</label><br>
+                <select class="selectpicker" id="heightMenu" onmouseover="DropList('heightMenu')" onmouseout="this.size=1;">
+                    <option value="0" selected="selected">Any height</option>
+                </select>
+            </div>
+
+            <!-- dropdown to select blooming season (filled dynamically at page load) -->
+            <div class="col-md-2">
+                <label for="bloomMenu" style="background-color: white;padding: 2px;font-size: smaller;">Blooming Season</label><br>
+                <select class="selectpicker" id="bloomMenu" onmouseover="DropList('bloomMenu')" onmouseout="this.size=1;">
+                    <option value="0" selected="selected">Any time of year</option>
+                </select>
+            </div>
+
+            <!-- dropdown to select moisture (filled dynamically at page load) -->
+            <div class="col-md-2">
+                <label for="moistMenu" style="background-color: white;padding: 2px;font-size: smaller;">Moisture</label><br>
+                <select class="selectpicker" id="moistMenu" onmouseover="DropList('moistMenu')" onmouseout="this.size=1;">
+                    <option value="0" selected="selected">Any moisture</option>
+                </select>
+            </div>
+
+            <!-- dropdown to select sunshine (filled dynamically at page load) -->
+            <div class="col-md-2">
+                <label for="sunMenu" style="background-color: white;padding: 2px;font-size: smaller;">Sun Needs</label><br>
+                <select class="selectpicker" id="sunMenu" onmouseover="DropList('sunMenu')" onmouseout="this.size=1;">
+                    <option value="0" selected="selected">Any Level of Sunshine</option>
+                </select>
+            </div>
+
+            <!-- dropdown to select categories (filled dynamically at page load) -->
+            <div class="col-md-2">
+                <label for="catMenu" style="background-color: white;padding: 2px;font-size: smaller;">Category</label><br>
+                <select class="selectpicker" id="catMenu" onmouseover="DropList('catMenu')" onmouseout="this.size=1;">
+                    <option value="0" selected="selected">Any Category</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- table dynamically filled by results of SQL search -->
+        <table class="table table-bordered table-hover" id="name-search-table" style="display: none;">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+
+
+    </section>
+
+</div>
+
+<script>
+
+    var flower_table = $('#name-search-table');
+
+    // =======================================================================
+    // LOAD THE JSON FILES
+    // https://stackoverflow.com/questions/7346563/loading-local-json-file
+    // =======================================================================
+    //var json_data;
+    //var height_data;
+    //(function () {
+    //    json_data   = DATA;
+    //    height_data = HEIGHT;
+    //})();
+
+    // =======================================================================
+    // LOAD THE SQLITE3 DATABASE FILE + BUILD DROPDOWN BOXES
+    // https://github.com/kripken/sql.js/
+    // =======================================================================
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'data/flowers.sqlite3', true);
+    xhr.responseType = 'arraybuffer';
+
+    var height_selector = $('#heightMenu');
+    var bloom_selector  = $('#bloomMenu');
+    var moist_selector  = $('#moistMenu');
+    var sun_selector    = $('#sunMenu');
+    var cat_selector    = $('#catMenu');
+
+    var db;               // global for database connection
+    xhr.onload = function () {
+        // load the sqlite3 database file
+        // -------------------------------
+        var uInt8Array = new Uint8Array(this.response);
+        db = new SQL.Database(uInt8Array);
+
+        // display a list of tables on the console
+        // ---------------------------------------
+        var tbls = db.exec("SELECT * FROM sqlite_master where type='table';");
+        console.log(tbls);
+
+        // build the height dropdown box
+        // -----------------------------
+        var height_data = db.exec("SELECT * FROM height");
+        var height_option;
+
+        for (var i = 0; i < height_data[0].values.length; i++) {
+            height_option = "<option value='" + height_data[0].values[i][0] + "'>" + height_data[0].values[i][1] + "</option>";
+            height_selector.append(height_option);
+        }
+
+        // build the blooming season dropdown box
+        // --------------------------------------
+        var bloom_data = db.exec("SELECT * FROM bloom");
+        var bloom_option;
+        for (i = 0; i < bloom_data[0].values.length; i++) {
+            bloom_option = "<option value='" + bloom_data[0].values[i][0] + "'>" + bloom_data[0].values[i][1] + "</option>";
+            bloom_selector.append(bloom_option);
+        }
+
+        // build the moisture dropdown box
+        // --------------------------------------
+        var moist_data = db.exec("SELECT * FROM moisture");
+        var moist_option;
+        for (i = 0; i < moist_data[0].values.length; i++) {
+            moist_option = "<option value='" + moist_data[0].values[i][0] + "'>" + moist_data[0].values[i][1] + "</option>";
+            moist_selector.append(moist_option);
+        }
+
+        // build the sunshine dropdown box
+        // --------------------------------------
+        var sun_data = db.exec("SELECT * FROM sun");
+        var sun_option;
+        for (i = 0; i < sun_data[0].values.length; i++) {
+            sun_option = "<option value='" + sun_data[0].values[i][0] + "'>" + sun_data[0].values[i][1] + "</option>";
+            sun_selector.append(sun_option);
+        }
+
+        // build the category dropdown box
+        // --------------------------------------
+        var cat_data = db.exec("SELECT * FROM categories");
+        var cat_option;
+        for (i = 0; i < cat_data[0].values.length; i++) {
+            cat_option = "<option value='" + cat_data[0].values[i][0] + "'>" + cat_data[0].values[i][1] + "</option>";
+            cat_selector.append(cat_option);
+        }
+
+    };
+    xhr.send();
+
+    // =======================================================================
+    // SQL SEARCH AND TABLE FILL
+    // =======================================================================
+    function sql_search_and_table_fill() {
+        //
+        // all the input widgets set their own global variables
+        //
+        // this function
+        //    collects global variables into a WHERE clause
+        //    does a SQL SELECT
+        //    fills the table with the result
+        //
+        var where_clause = '';
+
+        // if all values are at their defaults, clear the table
+        if (plant_name.trim().length  ==  0  &&
+                height_selected_value == '0' &&
+                moist_selected_value  == '0' &&
+                sun_selected_value    == '0' &&
+                cat_selected_value    == '0' &&
+                bloom_selected_value  == '0') {
+
+            $("#name-search-table thead").children().remove();
+            $("#name-search-table tbody").children().remove();
+            $("#name-search-table").hide();
+
+            download_button_div.hide();download_csv = '';document.getElementById("download-title").value = '';
+
+            // otherwise, do a SQL search
+        } else {
+
+            // create the WHERE clause
+            // -----------------------
+            if (plant_name.trim().length > 0) {
+                where_clause = "(latin LIKE '%" + plant_name.trim() + "%' OR common LIKE '%" + plant_name.trim() + "%')";
+            }
+
+            if (height_selected_value > 0) {
+                var height_clause = " height='" + height_selected_value + "'";
+                if (where_clause.length > 0) {
+                    where_clause = where_clause + " AND " + height_clause;
+                } else {
+                    where_clause = height_clause;
+                }
+            }
+            if (bloom_selected_value > 0) {
+                var bloom_clause = " bloom='" + bloom_selected_value + "'";
+                if (where_clause.length > 0) {
+                    where_clause = where_clause + " AND " + bloom_clause;
+                } else {
+                    where_clause = bloom_clause;
+                }
+            }
+            if (moist_selected_value > 0) {
+                var moist_clause = " moist_code='" + moist_selected_value + "'";
+                if (where_clause.length > 0) {
+                    where_clause = where_clause + " AND " + moist_clause;
+                } else {
+                    where_clause = moist_clause;
+                }
+            }
+            if (sun_selected_value > 0) {
+                var sun_clause = " sun_code='" + sun_selected_value + "'";
+                if (where_clause.length > 0) {
+                    where_clause = where_clause + " AND " + sun_clause;
+                } else {
+                    where_clause = sun_clause;
+                }
+            }
+            if (cat_selected_value > 0) {
+                var cat_clause = " cat_code='" + cat_selected_value + "'";
+                if (where_clause.length > 0) {
+                    where_clause = where_clause + " AND " + cat_clause;
+                } else {
+                    where_clause = cat_clause;
+                }
+            }
+
+            // SQL search
+            // ----------
+            if (where_clause.length > 0) {
+                where_clause = " WHERE " + where_clause;
+            } else {
+                where_clause = '';
+            }
+            var select_clause = "SELECT latin,common,image_name,Category,range,season,Moisture,SunNeeds " +
+                                    "FROM flowers " +
+                                        "NATURAL JOIN height " +
+                                        "NATURAL JOIN moisture " +
+                                        "NATURAL JOIN categories " +
+                                        "NATURAL JOIN sun " +
+                                        "NATURAL JOIN bloom ";
+            var query = select_clause + where_clause + ";";
+            console.log(query);
+
+            res = db.exec(query);
+
+            // fill the table
+            // --------------
+            $("#name-search-table").show();
+            $("#name-search-table thead").children().remove();
+            $("#name-search-table tbody").children().remove();
+
+            // ---table header---
+            var theadRow = '<tr>';
+            download_csv = '';         // text for *.csv download
+            var image_col     = false; // image found in this table?
+            var image_col_num = 0;     // which row position is column 'image_name'?
+            var col_num       = 0;
+
+            for (var colh in res[0].columns) {
+
+                if (res[0].columns[colh] == 'image_name') {
+                    // make the 'image_name' column invisible
+                    // and don't include it in the *.csv file
+                    image_col_num = col_num;
+                    theadRow = theadRow + '<th style="display:none;">' + res[0].columns[colh] + '</th>';
+                } else {
+                    col_num++;
+                    theadRow = theadRow + '<th>' + res[0].columns[colh] + '</th>';
+                    download_csv = download_csv + res[0].columns[colh] + ",";
+                }
+            }
+
+            theadRow = theadRow + '</tr>';
+            flower_table.find('thead').append(theadRow);
+
+            download_csv = download_csv.substring(0, download_csv.length - 1) + "\n";
+
+            // ---rows of data---
+            for (var i = 0; i < res[0].values.length; i++) {
+                var row  = res[0].values[i];
+                var aRow = '<tr>';
+
+                // rows with images are displayed with bold font
+                if (row[image_col_num].length > 0) {aRow = '<tr style="font-weight:bold;">';}
+
+                for (var ii = 0; ii < row.length; ii++) {
+
+                    if (ii == image_col_num) {
+                        // this <td> contains the image information
+                        // it is invisible
+                        var atag = '';
+                        if (row[ii].length > 0) {
+                            image_col = true;
+                            atag = row[ii] + '<a href="https://georgefisher.com/flowers/"' +
+                                    ' class="screenshot" rel="https://georgefisher.com/flowers/screenshots/' +
+                                    row[ii] + '">';
+                        }
+                        aRow = aRow + '<td style="display:none;">' + atag + '</td>';
+
+
+                    } else {
+                        aRow = aRow + '<td>' + row[ii] + '</td>';
+                        download_csv = download_csv + row[ii] + ",";
+                    }
+                }
+
+                aRow = aRow + '</tr>';
+                flower_table.find('tbody').append(aRow);
+
+                download_csv = download_csv.substring(0, download_csv.length - 1) + "\n";
+            }
+
+            // note at bottom of table about clicking images
+            if (image_col) {
+                var cLen = res[0].columns.length-1;
+                aRow = '<tr><td colspan="' + cLen + '" style="text-align: center;font-style: italic;font-size: smaller;">Click on rows with <span style="font-weight: bold;">bold face type</span> to see images; click on the image to close</td></tr>';
+                flower_table.find('tbody').append(aRow);
+            }
+
+            download_button_div.show();
+        }
+    }
+
+    // ================
+    // UTILITY FUNCTION
+    // ================
+
+    function DropList(idval) {
+        //
+        // fully opens a dropdown window for a select box on hover
+        //
+        var numOptgroups = document.getElementById(idval).getElementsByTagName('optgroup').length;
+        var numOptions   = document.getElementById(idval).getElementsByTagName('option').length;
+        document.getElementById(idval).size = numOptgroups + numOptions;
+    }
+
+    // =======================================================================
+    // DOWNLOAD BUTTON
+    // =======================================================================
+
+    var download_button_div = $('#download-btn-div');
+    var download_button     = $('#download-btn');
+    var download_title      = $('#download-title');
+    var download_csv        = '';
+    download_button.click(function () {
+        var title = "flower_table";
+        if (download_title.val().trim().length  > 0) {
+            title = document.getElementById("download-title").value
+        }
+        download(download_csv, title + ".csv", "text/csv");
+    });
+
+    // =======================================================================
+    // CLICK ON A TABLE ROW ... POPUP ANY ASSOCIATED IMAGE
+    // =======================================================================
+
+    // modification of: https://jsfiddle.net/chin/2y4s4/
+
+    // click on a row with an image to pop up the image
+    flower_table.on('click','tr', function(e) {
+
+        // close any existing flower popup windows
+        if ($("body #screenshot").length > 0) {
+            $("body #screenshot").remove();
+        }
+
+        var image = $(e.currentTarget).find('a').attr('rel');
+        if (typeof image === "undefined") {
+        } else {
+            xOffset = 10;
+            yOffset = 30;
+
+            // dynamically create a <p> element with the image in it
+            $("body").append("<p id='screenshot'><img src='"+ image  +"' alt='url preview' /></p>");
+            $("#screenshot")
+                    .css("top",(e.pageY - xOffset) + "px")
+                    .css("left",(e.pageX + yOffset) + "px")
+                    .fadeIn("fast");
+        }
+        e = null; // seems to be required, made it up
+    });
+
+    // click on the image to get rid of it
+    $("body").on('click',"#screenshot", function(e) {$("#screenshot").remove()});
+
+
+    // =======================================================================
+    // SEARCH FOR LATIN OR COMMON NAMES
+    // =======================================================================
+
+    // search the database for each letter typed in
+    // --------------------------------------------
+    var plant_name = '';     // global for plant name
+
+    $('#name-search').keyup(function (keycode) {
+
+        // get the name from the form
+        plant_name = document.getElementById('name-search').value;
+
+        sql_search_and_table_fill();
+    });
+
+    // =======================================================================
+    // HEIGHT DROPDOWN
+    // =======================================================================
+
+    var height_selected_value = 0;    // global for height
+    var height_selected_text = '';    // global for height
+
+    height_selector.click(function () {
+        height_selected_value = $(this).find(':selected').val();
+        height_selected_text  = $(this).find(':selected').text();
+
+        document.getElementById("heightMenu").size = 1;
+
+        sql_search_and_table_fill();
+    });
+
+    // =======================================================================
+    // BLOOMING PERIOD DROPDOWN
+    // =======================================================================
+
+    var bloom_selected_value = 0;    // global for blooming period
+    var bloom_selected_text = '';    // global for blooming period
+
+    bloom_selector.click(function () {
+        bloom_selected_value = $(this).find(':selected').val();
+        bloom_selected_text  = $(this).find(':selected').text();
+
+        document.getElementById("bloomMenu").size = 1;
+
+        sql_search_and_table_fill();
+    });
+
+    // =======================================================================
+    // MOISTURE DROPDOWN
+    // =======================================================================
+
+    var moist_selected_value = 0;    // global for moisture
+    var moist_selected_text = '';    // global for moisture
+
+    moist_selector.click(function () {
+        moist_selected_value = $(this).find(':selected').val();
+        moist_selected_text  = $(this).find(':selected').text();
+
+        document.getElementById("moistMenu").size = 1;
+
+        sql_search_and_table_fill();
+    });
+
+    // =======================================================================
+    // SUNSHINE DROPDOWN
+    // =======================================================================
+
+    var sun_selected_value = 0;    // global for sunshine
+    var sun_selected_text  = '';    // global for sunshine
+
+    sun_selector.click(function () {
+        sun_selected_value = $(this).find(':selected').val();
+        sun_selected_text  = $(this).find(':selected').text();
+
+        document.getElementById("sunMenu").size = 1;
+
+        sql_search_and_table_fill();
+    });
+
+    // =======================================================================
+    // CATEGORY DROPDOWN
+    // =======================================================================
+
+    var cat_selected_value = 0;    // global for category
+    var cat_selected_text  = '';     // global for category
+
+    cat_selector.click(function () {
+        cat_selected_value = $(this).find(':selected').val();
+        cat_selected_text  = $(this).find(':selected').text();
+
+        document.getElementById("catMenu").size = 1;
+
+        sql_search_and_table_fill();
+    });
+
+    // =======================================================================
+    // CLEAR ALL BUTTON
+    // =======================================================================
+
+    $("#clear-all-btn").on("click", function () {
+
+        plant_name = "";
+        height_selected_value = '0';
+        moist_selected_value  = '0';
+        cat_selected_value    = '0';
+        sun_selected_value    = '0';
+        bloom_selected_value  = '0';
+
+        $('#name-search').val("");
+        height_selector.prop('selectedIndex', 0);
+        bloom_selector.prop('selectedIndex', 0);
+        moist_selector.prop('selectedIndex', 0);
+        sun_selector.prop('selectedIndex', 0);
+        cat_selector.prop('selectedIndex', 0);
+
+        //$('#screenshot').remove();
+
+        sql_search_and_table_fill();
+    });
+
+
+</script>
+
+
+</body>
+</html>

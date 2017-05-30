@@ -1,0 +1,7 @@
+sun_code,sun_display,sun_icon,sun_search
+1,Full Sun,icon_sun.jpg,1;2;3
+2,Full or Part Sun,icon_sun_ps.jpg,
+3,Any,icon_sun_ps_shade.jpg,
+4,Part Sun,icon_ps.jpg,2;3;4;5
+5,Part Sun or Shade,icon_ps_shade.jpg,
+6,Shade,icon_shade.jpg,3;5;6

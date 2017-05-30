@@ -1,0 +1,8 @@
+region_code,region_display,region_search
+1,No info,
+2,Mountain,2;5;6
+3,Piedmont,3;5;6;7
+4,Coastal,4;6;7
+5,Mountain and Piedmont,
+6,Mountain and Piedmont and Coastal,
+7,Piedmont and Coastal,

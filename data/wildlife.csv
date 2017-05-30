@@ -1,0 +1,30 @@
+wild_code ,wildlife_display,wildlife_icon,wildlife_search
+1,Attracts birds.,icon_bi.jpg,1;6;8;17;19;20;21;22;23;24;25;28;29;31
+2,Attracts hummingbirds.,icon_h.jpg,2;7;8;10;11;12;18;24;25;26;28;29;31
+3,Feeds the bees.,icon_b.jpg,3;7;8;10;11;12;13;14;15;19;20;21;22;25;31
+4,Feeds adult butterflies or moths.,icon_bu.jpg,4;11;12;13;14;16;17;18;20;21;23;24;25;26;28;31
+5,Larval host plant.,icon_l.jpg,5;6;12;14;15;16;18;21;22;23;24;29;31
+6,Birds. Butterfly  or moth larvae.,icon_bi_l.jpg,
+7,Hummingbirds. Bees.,icon_h_b.jpg,
+8,Birds. Hummingbirds. Bees.,icon_bi_h_b.jpg,
+10,Hummingbirds. Bees.,icon_h_b.jpg,
+11,Hummingbirds. Bees. Adult butterflies or moths.,icon_h_b_bu.jpg,
+12,Hummingbirds. Bees. Adult and larval butterflies or moths.,icon_h_b_bu_l.jpg,
+13,Bees. Adult butterflies or moths.,icon_b_bu.jpg,
+14,Bees. Adult and larval butterflies or moths.,icon_b_bu_l.jpg,
+15,Bees. Butterfly or moth larvae.,icon_b_l.jpg,
+16,Adult and larval butterflies or moths.,icon_bu_l.jpg,
+17,Birds. Adult butterflies or moths.,icon_bi_bu.jpg,
+18,Hummingbirds. Adult and larval butterflies or moths.,icon_h_bu_l.jpg,
+19,Birds. Bees.,icon_bi_b.jpg,
+20,Birds. Bees. Adult butterflies or moths.,icon_bi_b_bu.jpg,
+21,Birds. Bees. Adult and larval butterflies or moths.,icon_bi_b_bu_l.jpg,
+22,Birds. Bees. Butterfly or moth larvae.,icon_bi_b_l.jpg,
+23,Birds. Adult and larval butterflies or moths.,icon_bi_bu_l.jpg,
+24,Birds. Hummingbirds. Adult and larval butterflies or moths.,icon_bi_h_bu_l.jpg,
+25,Birds. Hummingbirds. Bees. Adult butterflies or moths.,icon_bi_h_b_bu.jpg,
+26,Hummingbirds. Adult butterflies or moths.,icon_h_bu.jpg,
+28,Birds. Hummingbirds. Adult butterflies or moths.,icon_bi_h_bu.jpg,
+29,Birds. Hummingbirds. Butterfly or moth larvae.,icon_bi_h_l.jpg,
+30,No info on wildlife value.,icon_blank.jpg,
+31,Birds. Hummingbirds. Bees. Adult and larval butterflies or moths.,icon_bi_h_b_bu_l.jpg,

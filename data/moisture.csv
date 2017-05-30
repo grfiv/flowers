@@ -1,0 +1,7 @@
+moist_code,moist_display,moist_icon,moist_search
+1,Dry,icon_dry.jpg,1;2;3
+2,Dry or Moist,icon_dry_moist.jpg,
+3,Dry or Moist or Wet,icon_dry_moist_wet.jpg,
+4,Moist,icon_moist.jpg,2;3;4;5
+5,Moist or Wet,icon_moist_wet.jpg,
+6,Wet,icon_wet.jpg,3;5;6
